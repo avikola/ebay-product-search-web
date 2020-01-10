@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.0.js" integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-animate.js"></script>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-svg-round-progressbar/0.4.8/roundProgress.min.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="index.css">
+        
+    </head>
+    
+    <body ng-app="search_app" ng-controller="b_control">
+    
+        <div class="container text-white searchbox bg-dark">
+        
+            <h3 class="text-center boxtitle"><b>Product Search</b></h3>
+        
+            <form class="form-horizontal formbox bg-dark" id="main_form" name="main_form" ng-submit="doSearch($e1)">
+
+                <div class="form-group row justify-content-left">
+                    <label class="control-label col-sm-2 offset-sm-2" for="keyword">Keyword<span style="color: red;">*</span></label>
+                    <div class="col-sm-6">
+                        <input id="keyword" ng-required="1" ng-model="keyword" type="text" name="keyword" class="form-control col-10" placeholder="Enter Product Name (eg. iPhone 8)" required>                       
+                        
+                        <span ng-show="(main_form.keyword.$touched && main_form.keyword.$invalid)" for="keyword" style="color: red;">Please enter a keyword.</span>
+                    </div>
+                </div>
+
+                <div class="form-group row justify-content-left">
+                    <label class="control-label col-sm-2 offset-sm-2" for="category">Category</label>
+                    <div class="col-sm-4">
+                        <select id="category" class="form-control" ng-model="category">
+                            <option value="all">All Categories</option>
+                            <option value="art">Art</option>
+                            <option value="baby">Baby</option>
+                            <option value="books">Books</option>
+                            <option value="clothes">Clothing, Shoes & Accessories</option>
+                            <option value="computers">Computers/Tablets & Networking</option>
+                            <option value="health">Health & Beauty</option>
+                            <option value="music">Music</option>
+                            <option value="games">Video Games & Consoles</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row justify-content-left">
+
+                    <label class="control-label col-sm-2 offset-sm-2">Condition</label>
+
+                    <div class="col-sm-4">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="new" type="checkbox" name="condition1" value="new" autocomplete="off">
+                            <label class="form-check-label" for="new">New</label>
+                        </div>
+
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="used" type="checkbox" name="condition2" value="used" autocomplete="off">
+                            <label class="form-check-label" for="used">Used</label>
+                        </div>
+
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="unspecified" type="checkbox" name="condition3" value="unspecified" autocomplete="off">
+                            <label class="form-check-label" for="unspecified">Unspecified</label>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="form-group row justify-content-left">
+
+                    <label class="control-label col-sm-2 offset-sm-2">Shipping Options</label>
+
+                    <div class="col-sm-4">
+                        
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="local_pickup" type="checkbox" name="ship1" value="local_pickup" autocomplete="off">
+                            <label class="form-check-label" for="local_pickup">Local Pickup</label>
+                        </div>
+
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" id="free_shipping" type="checkbox" name="ship2" value="free_shipping" autocomplete="off">
+                            <label class="form-check-label" for="free_shipping">Free Shipping</label>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group row justify-content-left">
+                    <label class="control-label col-sm-2 offset-sm-2" for="distance">Distance (Miles)</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control col-5" id="distance" placeholder="10" name="distance" ng-model="distance">
+                    </div>
+                </div>
+
+                <div class="form-group row justify-content-left" style="margin-bottom: 0px;">
+                    <label class="control-label col-sm-2 offset-sm-2">From<span style="color: red;">*</span></label>
+                    <div class="col-sm-4 radiorow" ng-init="location = current_loc">
+                        
+                        <label><input type="radio" name="location" id="current_loc" value="current_loc" ng-model="location" ng-checked="1">&nbsp;Current Location</label>
+                        
+                        <label><input type="radio" name="location" id="other_loc" value="other_loc" ng-model="location">&nbsp;Other. Please specify zip code:</label>
+                        
+                    </div>
+                </div>
+
+                <div class="form-group row justify-content-left">
+                    <div class="col-sm-6 offset-sm-4">                        
+                        <input type="text" id="other_loc_text" class="form-control col-10" name="other_loc_text"  ng-model="other_loc_text" ng-disabled="location == undefined||location=='current_loc'" ng-required="location != undefined && location!='current_loc'" ng-keyup="zip_autocomplete()" ng-pattern="/^\d{5}$/">
+                        <span style="color:red" ng-show="location=='other_loc' && (main_form.other_loc_text.$touched && main_form.other_loc_text.$invalid)">Please enter a valid zip code.</span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="control-label offset-sm-2 mb-4 buttonrow">
+                        
+                        <button type="submit" class="btn btn-light" id="submitter" ng-model="submitter" ng-disabled= "main_form.keyword.$invalid || (main_form.keyword.$touched && main_form.keyword.$invalid) || (location=='other_loc' && !other_loc_text.length )">
+                            <i class="material-icons form_i">search</i>Search</button>
+                        
+                        <button type="reset" class="btn btn-light" id="clearer" ng-model="clearer" ng-click="clearall()">
+                            <i class="material-icons form_i">clear_all</i>Clear</button>
+                        
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="container">
+            
+            <ul class="nav nav-pills mb-3 justify-content-center" id="tabs_nav" role="tablist">
+            
+                <li class="nav-item">
+                    <a class="nav-link active btn-dark" id="results_tab" data-toggle="pill" href="#results" role="tab" aria-controls="results" aria-selected="true">Results</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" id="wishlist_tab" data-toggle="pill" href="#wishlist" role="tab" aria-controls="wishlist" aria-selected="false">Wish List</a>
+                </li>
+                
+            </ul>
+            
+            <div class="container progbar">
+                <div ng-show="loading" class="progress" ng-cloak>
+                    <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;"></div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="pills-tabContent">
+                
+                <div class="tab-pane fade show active table-responsive" id="results" role="tabpanel">
+                </div>
+
+                <div class="tab-pane fade table-responsive" id="wishlist" role="tabpanel">
+                </div>
+
+            </div>
+            
+            
+        </div>
+        
+    </body> 
+</html>
+
+<script type="text/javascript">
+    
+    var final_zip;
+    var dist;
+    var save_results;
+    var save_wishlist;
+    var prod_det;
+    var thecurrentpage;
+    var wishlistJSON = [];
+    
+    var s_app = angular.module('search_app',['ngAnimate','angular-svg-round-progressbar']);
+
+    s_app.controller('b_control', function($scope, $http, $compile){
+        
+        $scope.category = "all";
+        $scope.loading = false;
+        
+        
+    
+        
+        $http.get("http://ip-api.com/json")
+        .then(function(response) {
+            $scope.zipper = response.data.zip;
+            final_zip=$scope.zipper;
+        });
+        
+        $scope.clearall = function()
+        {
+            $scope.main_form.keyword.$invalid = true;
+            $scope.main_form.keyword.$touched = false;
+            $scope.main_form.other_loc_text.$invalid = true;
+            $scope.main_form.other_loc_text.$touched = false;
+            $scope.location = 'current_loc';
+            
+            $('.nav-pills a[href="#results"]').tab('show');
+            document.getElementById("results").innerHTML = "";
+            angular.element(document.getElementById("results")).append($compile("")($scope));
+        }
+        
+        $scope.doSearch = function(e1)
+        {
+            {
+                if ($scope.distance == undefined || $scope.distance == "")
+                {
+                    dist = 10;
+                }
+                else
+                {
+                    dist = $scope.distance;
+                }
+
+                $scope.new_box = document.getElementById("new").checked;
+                $scope.used_box = document.getElementById("used").checked;
+                $scope.unspecified_box = document.getElementById("unspecified").checked;
+
+                $scope.local_pickup = document.getElementById("local_pickup").checked;
+                $scope.free_shipping = document.getElementById("free_shipping").checked;
+
+                if (document.getElementById("other_loc").checked)
+                {
+                    final_zip = document.getElementById("other_loc_text").value;
+                }
+                else
+                {
+                    final_zip = $scope.zipper;
+                }
+            }
+            
+            var url = "http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/results?keyword="+$scope.keyword+"&category="+$scope.category+"&new="+$scope.new_box+"&used="+$scope.used_box+"&unspecified="+$scope.unspecified_box+"&local_pickup="+$scope.local_pickup+"&free_shipping="+$scope.free_shipping+"&distance="+dist+"&location="+final_zip;
+            
+            $scope.loading = true;
+            
+            $http.get(url)
+              .then(function(response)
+                {
+                    console.log(response);
+                    if (response.statusText == "OK")
+                    {
+                        var resp = response.data;
+                        
+                        displayResults(resp);
+                        $('.nav-pills a[href="#results"]').tab('show');
+                        $scope.loading = false;
+                    }
+            });
+            
+        }
+        
+        
+        function ellipsize(str)
+        {
+            var t1 = 35;
+            if (str.length > t1)
+            {
+                while (str.charAt(t1-1)!= " ")
+                    t1--;
+                return str.substring(0,t1)+'...';
+            }
+            else
+                return str;
+        }
+        
+        $scope.addfav_det = function(itemtoadd, fbtn)
+        {
+            var f1_temp = JSON.parse(localStorage.getItem("favourites"));
+            
+            if (f1_temp == null)
+                f1_temp = [];
+            
+            f1_temp.push(itemtoadd);
+            localStorage.setItem("favourites",JSON.stringify(f1_temp));
+            
+            var thisbtn = $(fbtn.currentTarget).parent();
+            
+            thisbtn.html("");
+            
+            angular.element(thisbtn).append($compile("<button type='button' ng-click='removefav("+itemtoadd+",$event)' class='btn btn-light favouriter'><i style='vertical-align: middle' class='material-icons favourite_icon removefav'>remove_shopping_cart</i></button>")($scope));
+            
+            
+        }
+                
+        $scope.addfav = function(itemtoadd, fbtn)
+        {
+            var f1_temp = JSON.parse(localStorage.getItem("favourites"));
+            var e = JSON.parse(localStorage.getItem("exp"));
+            var d = JSON.parse(localStorage.getItem("day"));
+            
+            var thisbtn = $(fbtn.currentTarget).parent();
+            
+            var exp = $(thisbtn).parent().data("exp");
+            var day = $(thisbtn).parent().data("day");
+            
+            if (f1_temp == null)
+            {
+                f1_temp = [];
+                e = [];
+                d = [];
+            }
+            
+            f1_temp.push(itemtoadd);
+            e.push(exp);
+            d.push(day);
+            localStorage.setItem("favourites",JSON.stringify(f1_temp));
+            localStorage.setItem("exp",JSON.stringify(e));
+            localStorage.setItem("day",JSON.stringify(d));
+            
+            
+            thisbtn.html("");
+            
+            angular.element(thisbtn).append($compile("<button type='button' ng-click='removefav("+itemtoadd+",$event)' class='btn btn-light favouriter'><i style='vertical-align: middle' class='material-icons favourite_icon removefav'>remove_shopping_cart</i></button>")($scope));
+            
+            wishlistJSON = [];
+            $scope.wishCaller();            
+            
+        }
+        
+        $scope.removefav = function(itemtoremove, fbtn)
+        {
+            var f2_temp = JSON.parse(localStorage.getItem("favourites"));
+            var ind = $.inArray(itemtoremove, f2_temp);
+            f2_temp.splice(ind, 1);
+            
+            var e2 = JSON.parse(localStorage.getItem("exp"));
+            var d2 = JSON.parse(localStorage.getItem("day"));
+            e2.splice(ind, 1);
+            d2.splice(ind, 1);
+            
+            localStorage.setItem("favourites",JSON.stringify(f2_temp));
+            localStorage.setItem("exp",JSON.stringify(e2));
+            localStorage.setItem("day",JSON.stringify(d2));
+            
+            var thisbtn = $(fbtn.currentTarget).parent();
+            
+            thisbtn.html("");
+            
+            angular.element(thisbtn).append($compile("<button type='button' ng-click='addfav("+itemtoremove+",$event)' class='btn btn-light favouriter'><i style='vertical-align: middle' class='material-icons favourite_icon addfav'>add_shopping_cart</i></button>")($scope));
+            
+            if($(thisbtn).parents("#wishtb").length)
+            {                
+                $(thisbtn).parent().remove();
+                temp = $("#wishtb").find("tr").length;
+                if (temp == 2)
+                    $("#wishlist").html($compile("<div class='no_results'>No Records.</div>")($scope));
+                
+                var total_val = 0;
+                $("#wishtb .tdprice").each(function(){
+                    total_val += parseFloat($(this).text().replace('$',''));
+                });
+                $(".total_shop").html("<th></th><th></th><th></th><th></th><th></th><th>Total Shopping</th>");
+                $(".total_shop").append($compile("<th>$"+total_val.toFixed(2)+"</th>")($scope))
+            }
+            
+            wishlistJSON = [];
+            $scope.wishCaller(); 
+            
+        }
+
+        var results_data;
+        function displayResults(data) 
+        {
+            results_data = data;
+            var result_table = document.getElementById("results");
+            var html_text = "";
+            
+            if (data == null || data.findItemsAdvancedResponse[0].searchResult[0]['@count'] == 0) 
+            {
+                html_text += '<div class="no_results">No Records.</div>';
+                document.getElementById('wishlist').innerHTML = html_text;
+            }
+            
+            else
+            {
+                var total_pages = Math.floor((data.findItemsAdvancedResponse[0].searchResult[0]['@count'])/10);
+                
+                html_text += "<button type='button' style='float: right; margin-bottom: 20px;' class='btn btn-light detail_btn' ng-click='DetailsBtn()' disabled>Detail<i style='vertical-align: middle;' class='material-icons'>chevron_right</i></button>";
+                
+                html_text += "<table id='resultstb' class='table table-dark table-striped table-hover'>";
+                html_text += "<thead>";
+                html_text += "<th scope='col'>#</th>";
+                html_text += "<th scope='col'>Image</th>";
+                html_text += "<th scope='col'>Title</th>";
+                html_text += "<th scope='col'>Price</th>";
+                html_text += "<th scope='col'>Shipping</th>";
+                html_text += "<th scope='col'>Zip</th>";
+                html_text += "<th scope='col'>Seller</th>";
+                html_text += "<th scope='col'>Wishlist</th>";
+                html_text += "</thead>";
+                
+                html_text += "<tbody>";
+                
+                for(i=0; i < data.findItemsAdvancedResponse[0].searchResult[0]['@count']; i++)
+                {
+                    var exp = data.findItemsAdvancedResponse[0].searchResult[0].item[i].shippingInfo[0].expeditedShipping[0];
+                    if (exp == undefined)
+                        exp = "none";
+                    
+                    var day = data.findItemsAdvancedResponse[0].searchResult[0].item[i].shippingInfo[0].oneDayShippingAvailable[0];
+                    if (day == undefined)
+                        day = "none";
+                    
+                    html_text += "<tr class='resultrows' data-exp='"+exp+"' data-day='"+day+"' ng-click='rowselect($event)'>";
+                    
+                    html_text += "<td>"+(i+1)+"</td>";
+                    
+                    if(data.findItemsAdvancedResponse[0].searchResult[0].item[i].galleryURL != undefined )
+                        var gal_url = data.findItemsAdvancedResponse[0].searchResult[0].item[i].galleryURL[0];
+                    else
+                        var gal_url = "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
+                    
+                    html_text += "<td class='thumb_cover'><a href='"+gal_url+"' target='_blank'><img style='width: 100px; height: 100px;'  class='t_thumb' src='"+gal_url+"' onerror='this.src=http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif'/></a></td>";
+                    
+                    var t_name = ellipsize(data.findItemsAdvancedResponse[0].searchResult[0].item[i].title[0]);
+                    
+                    var now_itemid = data.findItemsAdvancedResponse[0].searchResult[0].item[i].itemId[0];
+                    
+                    html_text += "<td class='t_name t_tips' id='"+now_itemid+"'><a class='results_links' data-toggle='tooltip' data-placement='bottom' title='"+data.findItemsAdvancedResponse[0].searchResult[0].item[i].title[0]+"' href='' ng-click='linkClick("+now_itemid+")' >"+t_name+"</a></td>";
+                    
+                    html_text += "<td>$"+parseFloat(data.findItemsAdvancedResponse[0].searchResult[0].item[i].sellingStatus[0].currentPrice[0]['__value__']).toFixed(2)+"</td>";
+                    
+                    shipcheck = data.findItemsAdvancedResponse[0].searchResult[0].item[i].shippingInfo[0].shippingServiceCost;
+                    if (shipcheck != undefined)
+                    {
+                        var ship_temp = data.findItemsAdvancedResponse[0].searchResult[0].item[i].shippingInfo[0].shippingServiceCost[0]['__value__'];
+                    
+                        if (ship_temp == "0.0")
+                            ship_temp = "Free Shipping";
+                        else if (ship_temp == "")
+                            ship_temp = "N/A";
+                        else
+                            ship_temp = "$"+ship_temp;
+
+                        html_text += "<td style='white-space: nowrap;'>"+ship_temp+"</td>";
+                    }
+                    
+                    
+                    var zip_temp = data.findItemsAdvancedResponse[0].searchResult[0].item[i].postalCode[0];
+                    
+                    if(zip_temp == "")
+                        zip_temp = "N/A";
+                    
+                    html_text += "<td>"+zip_temp+"</td>";
+                    
+                    html_text += "<td>"+data.findItemsAdvancedResponse[0].searchResult[0].item[i].sellerInfo[0].sellerUserName[0].toUpperCase()+"</td>";
+                    
+                    var favourites_list = JSON.parse(localStorage.getItem("favourites"));
+                    
+                    if (favourites_list == null || !favourites_list.includes(parseInt(now_itemid)))
+                    {
+                        fav_func = "addfav";
+                        iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon addfav'>add_shopping_cart</i>";
+                    }
+                    
+                    else
+                    {
+                        fav_func = "removefav";
+                        iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon removefav'>remove_shopping_cart</i>";
+                    }
+                    
+                    
+                    html_text += "<td><button type='button' ng-click='"+fav_func+"("+now_itemid+",$event)' class='btn btn-light favouriter'>"+iconer+"</button></td>";
+                    
+                    html_text += "</tr>";
+                    
+                }
+                
+                
+                html_text += "</tbody></table>";
+            }
+            
+            document.getElementById("results").innerHTML = "";
+            angular.element(document.getElementById("results")).append($compile(html_text)($scope));
+            
+            if (!(data == null || data.findItemsAdvancedResponse[0].searchResult[0]['@count'] == 0))
+            {
+                $('#resultstb').after('<div id="results"></div>');
+                var pagelimit = 10;
+                var totalitems = $('#resultstb tbody tr').length;
+                var totalpages = totalitems/pagelimit;
+            
+                $('#results').append('<nav class="pg_nav"><ul class="pagination pagination-sm justify-content-center"><li class="page-item disabled"><a id="previous" class="page-link" href="javascript:void(0);" tabindex="-1"><span aria-hidden="true">&laquo;&nbsp;&nbsp;</span>Previous</a></li>');
+            
+                for(i = 0;i < totalpages;i++)
+                {
+                    var pager = i + 1;
+                    $('#results ul').append('<li class="page-item"><a class="page-link pgination" href="javascript:void(0);" rel="'+i+'">'+pager+'</a></li>');
+                }
+
+                $('#results ul').append('<li class="page-item"><a id="next" href="javascript:void(0);" class="page-link">Next<span aria-hidden="true">&nbsp;&nbsp;&raquo;</span></a></li></ul></nav>');
+            
+                $('#resultstb tbody tr').hide();
+                $('#resultstb tbody tr').slice(0, pagelimit).show();
+
+                $('#next').bind('click', function()
+                {
+                    var current_page = $('.pgination.active').attr('rel');
+                    var rel_next = parseInt(current_page)+1;
+                    var tt = ".page-link[rel="+rel_next+"]";
+                    $(tt).click();
+                });
+
+                $('#previous').bind('click', function()
+                {
+                    var current_page = $('.pgination.active').attr('rel');
+                    var rel_next = parseInt(current_page)-1;
+                    var tt = ".page-link[rel="+rel_next+"]";
+                    $(tt).click();
+                });
+
+                $('#results .pgination').bind('click', function(){
+
+                    $('#results .page-link').removeClass('active');
+                    $(this).addClass('active');
+                    var currPage = $(this).attr('rel');
+                    var startItem = currPage * pagelimit;
+                    var endItem = startItem + pagelimit;
+
+                    var current_page = $('.pgination.active').attr('rel');
+                    var rel_next = parseInt(current_page);
+
+                    if (rel_next+1 == total_pages)
+                        $('#next').parent().addClass("disabled");
+                    else
+                        $('#next').parent().removeClass("disabled");
+
+                    if(rel_next == 0)
+                        $('#previous').parent().addClass("disabled");
+                    else    
+                        $('#previous').parent().removeClass("disabled");
+
+                    $('#resultstb tbody tr').hide().slice(startItem, endItem).
+                    css('display','table-row');
+
+                });
+                $('.page-link[rel="0"]').addClass('active');
+            }
+            
+        }
+        
+        $scope.DetailsBtn = function()
+        {
+            var temp = $(".highlighted .t_name").attr("id");
+            $scope.linkClick(temp);
+        }
+        
+        $scope.linkClick = function(theitemid)
+        {            
+            var url2 = "http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/details/"+theitemid;
+            
+            $http.get(url2)
+            .then(function(response){                
+                console.log(response);
+                if (response.statusText == "OK")
+                {
+                    var deets = response.data;
+                    
+                    thecurrentpage = $('.page-link.active').attr('rel');
+                    $('.pg_nav').empty();
+                    $('.pg_nav').remove();
+                    save_results = $('#results').html();
+                    productPage(deets);
+                }
+            });
+        }
+        
+        $scope.linkClickW = function(theitemid)
+        {            
+            var url2 = "http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/details/"+theitemid;
+            
+            $http.get(url2)
+            .then(function(response){                
+                console.log(response);
+                if (response.statusText == "OK")
+                {
+                    var deets = response.data;
+                    save_wishlist = $('#wishlist').html();
+                    productPageWishlist(deets);
+                }
+            });
+        }
+        
+        function changePhoto(photo_data)
+        {
+            var pchecker = photo_data.items;
+            var photos_html ="";
+            if(pchecker != undefined)
+            {
+                photos_html += "<div class='container imagegrid'>";
+                for(t3=0; t3<parseInt(photo_data.items.length); t3++)
+                {
+                    photos_html += "<div><a href='"+photo_data.items[t3]['link']+"' target='_blank'><img class='griditem w-100' src='"+photo_data.items[t3]['link']+"'></a></div>";
+                }
+                photos_html += "</div>";
+            }
+            else
+            {
+                photos_html += "<div class='card no_photos'>No Photos Found.</div>";
+            }
+                
+                $('#photos').html("");
+            angular.element(document.getElementById("photos")).append($compile(photos_html)($scope));
+        }
+        
+        function changePhotoW(photo_data)
+        {
+            var pchecker = photo_data.items;
+            var photos_html ="";
+            if(pchecker != undefined)
+            {
+                photos_html += "<div class='container imagegrid'>";
+                for(t3=0; t3<parseInt(photo_data.items.length); t3++)
+                {
+                    photos_html += "<div><a href='"+photo_data.items[t3]['link']+"' target='_blank'><img class='griditem w-100' src='"+photo_data.items[t3]['link']+"'></a></div>";
+                }
+                photos_html += "</div>";
+            }
+            else
+            {
+                photos_html += "<div class='card no_photos'>No Photos Found.</div>";
+            }
+                
+                $('#wishlist #photos').html("");
+                $('#wishlist #photos').html($compile(photos_html)($scope));
+        }
+        
+        
+        function similarTab(sim_data)
+        {
+            var sim_html = "";
+            
+            if(sim_data.getSimilarItemsResponse.itemRecommendations.item!= undefined && sim_data.getSimilarItemsResponse.itemRecommendations != undefined)
+           {
+                sim_html += "<div class='container row dropdownrow'>";
+                sim_html += "<div style='float:left;'>";
+
+                sim_html += "<select id='sort_cat' class='form-control'>";
+                    sim_html += "<option>Default</option>";
+                    sim_html += "<option>Product Name</option>";
+                    sim_html += "<option>Days Left</option>";
+                    sim_html += "<option>Price</option>";
+                    sim_html += "<option>Shipping Cost</option>";
+                sim_html += "</select>";
+
+
+                sim_html += "</div>";
+
+                sim_html += "<div style='float:left;'>";
+
+                sim_html += "<select id='sort_order' class='form-control' disabled>";
+                    sim_html += "<option>Ascending</option>";
+                    sim_html += "<option>Descending</option>";
+                sim_html += "</select>";
+
+
+                sim_html += "</div>";
+                sim_html += "</div>";
+                sim_html += "<div class='sim_list'>";
+
+
+
+                for (i=0; i<5 && i <sim_data.getSimilarItemsResponse.itemRecommendations.item.length; i++)
+                {
+
+                            var sname = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].title;
+                            var sprice = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].buyItNowPrice['__value__'];
+                            var ship = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].shippingCost['__value__'];
+                            var days = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].timeLeft;
+                            var daysleft = days.substring(days.lastIndexOf("P")+1, days.lastIndexOf("D"));
+
+                            sim_html += "<div class='card bg-dark' style='margin-bottom: 5px;'>";
+                                sim_html += "<div class='card-body' style='display: inline-flex; padding-top:10px;padding-bottom:10px;'>";
+
+                                    sim_html += "<div class='sim_image'>";
+                                    sim_html += "<img height=120 width=120 src ='"+sim_data.getSimilarItemsResponse.itemRecommendations.item[i].imageURL+"'>";
+                                    sim_html += "</div>";
+
+                                    sim_html += "<div class='sim_details' style='margin-top: 5px;'>";
+                                        sim_html += "<ul style='list-style-type: none;'>";
+                                            sim_html += "<li class='sname'>"+sname+"</li>";
+                                            sim_html += "<li class='sprice'>Price: $"+sprice+"</li>";
+
+                                            if ( ship == "0.0")
+                                                ship = "Free Shipping";
+
+                                            sim_html += "<li class='ship'>Shipping Cost: $"+ship+"</li>";
+                                            sim_html += "<li class='daysleft'>Days Left: "+daysleft+"</li>";                
+                                        sim_html += "</ul>";
+                                    sim_html += "</div>";
+
+                                sim_html += "</div>";
+                            sim_html += "</div>";           
+                        }
+                        sim_html += "<div class='moreboxes'>";
+                        for (;i <sim_data.getSimilarItemsResponse.itemRecommendations.item.length; i++)
+                        {
+                            var sname = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].title;
+                            var sprice = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].buyItNowPrice['__value__'];
+                            var ship = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].shippingCost['__value__'];
+                            var days = sim_data.getSimilarItemsResponse.itemRecommendations.item[i].timeLeft;
+                            var daysleft = days.substring(days.lastIndexOf("P")+1, days.lastIndexOf("D"));
+
+                            sim_html += "<div class='card bg-dark' style='margin-bottom: 5px;'>";
+                                sim_html += "<div class='card-body' style='display: inline-flex; padding-top:10px;padding-bottom:10px;'>";
+
+                                    sim_html += "<div class='sim_image'>";
+                                    sim_html += "<img height=120 width=120 src ='"+sim_data.getSimilarItemsResponse.itemRecommendations.item[i].imageURL+"'>";
+                                    sim_html += "</div>";
+
+                                    sim_html += "<div class='sim_details' style='margin-top: 5px;'>";
+                                        sim_html += "<ul style='list-style-type: none;'>";
+                                            sim_html += "<li class='sname'>"+sname+"</li>";
+                                            sim_html += "<li class='sprice'>Price: $"+sprice+"</li>";
+
+                                            if ( ship == "0.0")
+                                                ship = "Free Shipping";
+
+                                            sim_html += "<li class='ship'>Shipping Cost: $"+ship+"</li>";
+                                            sim_html += "<li class='daysleft'>Days Left: "+daysleft+"</li>";                
+                                        sim_html += "</ul>";
+                                    sim_html += "</div>";
+
+                                sim_html += "</div>";
+                            sim_html += "</div>";           
+                        }
+                        sim_html += "</div>";
+
+                        sim_html += "<div style='text-align: center;margin-top: 20px;'><button type='button' class='btn btn-dark shower'>Show More</button></div>"
+
+                        sim_html += "</div>";                   
+            }
+            else
+            {
+                sim_html = "<div class='no_results'>No Records.</div>";
+                
+            }
+        
+                    $('#similar').html(""); 
+                    $('#similar').html($compile(sim_html)($scope));
+
+                    $('.moreboxes').hide();
+
+                    if(sim_data.getSimilarItemsResponse.itemRecommendations.item.length <=5)
+                        $('.btn.shower').hide();
+
+                    $('.btn.shower').bind('click', function(){
+                        if($('.moreboxes').is(":hidden"))
+                        {
+                            $('.moreboxes').show();
+                            $('.btn.shower').html("Show Less");
+                        }
+                        else
+                        {
+                            $('.moreboxes').hide();
+                            $('.btn.shower').html("Show More");
+                        }
+                    });
+
+                    $(document).on('change','#sort_cat',function(){
+                       if($("#sort_cat").prop('selectedIndex')!=0)
+                           $('#sort_order').prop('disabled',false);
+                        else
+                        {
+                            $('#sort_order').prop('disabled',true);
+                            //$('.sim_list').html(save_default);
+                        }
+                    });            
+        }
+        
+        function productPageWishlist(data)
+        {
+            prod_det = data;
+            html_text = "<h5 style='text-align:center; font-weight: 700;'>"+data.Item.Title+"</h5>";
+            var theid = data.Item.ItemID;
+            
+            html_text += "<div class='container'><button type='button' style='float: left; margin-bottom: 20px; font-weight: 500;' class='btn btn-light detail_btn' ng-click='backtoWishlist()'><i style='vertical-align: middle;' class='material-icons'>chevron_left</i>List</button>";
+            
+            html_text += "<a target='_blank' href='' ng-click='fbShare()' id='fbBtn' style='margin-right: 2px; float:right;'><img src='http://csci571.com/hw/hw8/Images/facebook.png' height='40' width='40';></a></div>";
+            
+            
+            html_text += "<div class='container' style='margin-top: 80px; '>";
+            
+            
+            html_text += "<ul class='nav nav-tabs mb-3 justify-content-end' id='tabs_details' role='tablist'>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link active btn-dark' id='products_tab' data-toggle='tab' href='#products' role='tab' aria-controls='products' aria-selected='true'>Product</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='photos_tab' data-toggle='tab' href='#photos' role='tab' aria-controls='products' aria-selected='false'>Photos</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='shipping_tab' data-toggle='tab' href='#shipping' role='tab' aria-controls='shipping' aria-selected='false'>Shipping</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='seller_tab' data-toggle='tab' href='#seller' role='tab' aria-controls='seller' aria-selected='false'>Seller</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='similar_tab' data-toggle='tab' href='#similar' role='tab' aria-controls='similar' aria-selected='false'>Similar Products</a></li>";
+            
+            html_text += "</ul>";
+            
+            html_text += '<div class="tab-content" id="myTabContent">';
+            html_text += '<div class="tab-pane fade show active" id="products" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="photos" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="shipping" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="seller" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="similar" role="tabpanel"></div>';
+            html_text += '</div>';
+            
+            
+            html_text += "</div>";
+            
+            
+            document.getElementById("wishlist").innerHTML = "";
+            angular.element(document.getElementById("wishlist")).append($compile(html_text)($scope));
+            
+            // Product Details:
+            
+            prod_text = "<table id='detailstb' style='margin-top:-15px;' class='table table-dark table-striped'><tbody>";
+            
+            prod_text += "<tr><th>Product Images</th><td><a id='prod_modal' href=''>View Product Images Here</a></td></tr>";
+            
+            
+            prod_text += '<div class="modal" id="gallery_modal" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">';
+            
+            prod_text += '<h5 class="modal-title" style="font-weight: 700;">Product Images</h5>';
+            
+            prod_text += '<button class="close" type="button" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>';
+            
+            prod_text += '</div><div class="modal-body"><div id="gallery_carousel" class="carousel slide">';
+            
+            prod_text += '<div class="carousel-inner">';
+            
+            for(h=0; h<data.Item.PictureURL.length; h++)
+            {
+                if (h == 0)
+                    activator = " active";
+                else
+                    activator = "";
+                
+                prod_text += '<div class="carousel-item'+activator+'">';
+                prod_text += '<a href="'+data.Item.PictureURL[h]+'" target="_blank"><img class="d-block w-100 car_images" src='+data.Item.PictureURL[h]+'></a>';
+                prod_text += '</div>';
+            }
+            
+            prod_text += '</div>';
+            
+            if(data.Item.PictureURL.length>1)
+            {
+                prod_text += '<a class="carousel-control-prev" href="#gallery_carousel" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span></i></a>';
+
+                prod_text += '<a class="carousel-control-next" href="#gallery_carousel" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span></a>';
+            }
+            
+            
+            prod_text += '</div></div><div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal">Close</button></div></div></div></div>';
+            
+            if (data.Item.Subtitle != undefined)
+                prod_text += "<tr><th>Subtitle</th><td>"+data.Item.Subtitle+"</td></tr>";
+                
+            prod_text += "<tr><th>Price</th><td>$"+parseFloat(data.Item.CurrentPrice.Value).toFixed(2)+"</td></tr>";
+            
+            prod_text += "<tr><th>Location</th><td>"+data.Item.Location+"</td></tr>";
+            
+            if(data.Item.ReturnPolicy.ReturnsAccepted == "Returns Accepted")
+                returner = "Returns Accepted Within "+data.Item.ReturnPolicy.ReturnsWithin;
+            else
+                returner = "Returns Not Accepted";
+            
+            prod_text += "<tr><th>Return Policy</th><td>"+returner+"</td></tr>";
+            
+            spectest = data.Item.ItemSpecifics;
+            if (spectest != undefined)
+            {
+                spec_len = data.Item.ItemSpecifics.NameValueList.length;
+            
+                for (t=0; t<spec_len; t++)
+                {
+                    prod_text += "<tr>";
+
+                    prod_text += "<th>"+data.Item.ItemSpecifics.NameValueList[t].Name+"</th><td>";
+
+                    for (j=0; j < data.Item.ItemSpecifics.NameValueList[t].Value.length; j++)
+                    {
+                        prod_text += ""+data.Item.ItemSpecifics.NameValueList[t].Value[j];
+                        if (data.Item.ItemSpecifics.NameValueList[t].Value.length == j+1)
+                            prod_text += "";
+                        else
+                            prod_text += ", ";
+                    }
+
+                    prod_text += "</td></tr>";
+                }
+
+                prod_text += "</tbody></table>";
+            }
+            
+            
+            
+            $('#wishlist #products').html("");
+            
+            $('#wishlist #products').html($compile(prod_text)($scope));
+            
+            $("#wishlist #prod_modal").click(function(){
+               $('#wishlist #gallery_modal').modal('show');
+            });
+            
+            $('.carousel').carousel({
+               interval: false 
+            });
+            
+            // Photos Tab:
+            $http.get("http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/search/"+encodeURIComponent(data.Item.Title))
+                .then(function(img_data)
+                     {
+                changePhotoW(img_data.data);
+                
+            });
+            
+            // Shipping Tab:
+            
+            ship_text = "<table id='shippingtb' style='margin-top:-15px;' class='table table-dark table-striped'><tbody>";
+            
+            
+            shipcheck = data.Item.ShippingCostSummary;
+
+            if (shipcheck != undefined)
+            {
+                var shipcost = shipcheck.ShippingServiceCost.Value;
+
+                if (shipcost != 0.0)
+                    shipcost = "$"+shipcost;
+                else
+                    shipcost = "Free Shipping";
+                ship_text += "<tr><th>Shipping Cost</th><td>"+shipcost+"</td></tr>";
+            }
+
+            var shiploc = data.Item.ShipToLocations;
+
+            if( shiploc != undefined)
+            {
+                ship_text += "<tr><th>Shipping Locations</th><td>";
+                for (t2=0; t2 < shiploc.length; t2++)
+                {
+
+                    ship_text += ""+shiploc[t2];
+                    if(shiploc.length == t2+1)
+                        ship_text += "";
+                    else
+                        ship_text += ", ";
+
+                }
+                ship_text += "</td></tr>";
+            }
+
+            var hcheck = data.Item.HandlingTime;
+
+            if (hcheck != undefined)
+            {
+                if (hcheck == 1 || hcheck == 0)
+                    ship_text += "<tr><th>Handling Time</th><td>"+hcheck+" Day</td></tr>";
+                else
+                    ship_text += "<tr><th>Handling Time</th><td>"+hcheck+" Days</td></tr>";
+            }                    
+
+            tick = '<i class="material-icons" style="vertical-align: middle; color: green;">done</i>';
+            cross = '<i class="material-icons" style="vertical-align: middle; color: red;">clear</i>';
+
+            var f_temp = JSON.parse(localStorage.getItem("favourites"));
+            var e_temp = JSON.parse(localStorage.getItem("exp"));
+            var d_temp = JSON.parse(localStorage.getItem("day"));
+            
+            if(f_temp == null)
+                f_temp=[];
+            
+            for(t1 = 0; t1 < f_temp.length; t1++)
+            {
+                if(theid == f_temp[t1])
+                {                    
+                    var expedite = e_temp[t1];
+                    var oneday = d_temp[t1];
+                    var returnsaccept = data.Item.ReturnPolicy.ReturnsAccepted;
+                    
+                        if (expedite == true)
+                            expval = tick;
+                        else
+                            expval = cross;
+                        ship_text += "<tr><th>Expedited Shipping</th><td>"+expval+"</td></tr>";
+                        
+                        if (oneday == true)
+                            oneval = tick;
+                        else
+                            oneval = cross;
+                    
+                        ship_text += "<tr><th>One Day Shipping</th><td>"+oneval+"</td></tr>";
+                   
+                    if (returnsaccept != undefined)
+                    {
+                        if (returnsaccept == "true")
+                            retval = tick;
+                        else
+                            retval = cross;
+                        ship_text += "<tr><th>Returns Accepted</th><td>"+retval+"</td></tr>";
+                    }
+                    
+                }
+            }
+            
+            ship_text += "</tbody></table>";
+            
+            $('#wishlist #shipping').html("");
+            $('#wishlist #shipping').html($compile(ship_text)($scope));
+            
+            // Seller Tab:
+            
+            sell_text = "<table id='sellertb' style='margin-top:-15px;' class='table table-dark table-striped'><tbody>";
+            
+            sell_text += "<tr><th class='sellerheader' style='text-align: center;' colspan='2'>"+data.Item.Seller.UserID.toUpperCase()+"</th></tr>";
+            
+            var fscore = data.Item.Seller.FeedbackScore;
+            
+            if (fscore!= undefined)
+            {
+                sell_text += "<tr><th>Feedback Score</th><td>"+fscore+"</td></tr>";
+            }
+            
+            var pop = data.Item.Seller.PositiveFeedbackPercent;
+            
+            var popcircle = '<round-progress max="100" current="'+pop+'" color="green" bgcolor="#eaeaea" radius="20" stroke="3" semi="false" rounded="true" clockwise="false" responsive="false"></round-progress><span class="popspan">'+pop+'</span>';
+            
+            if (pop != undefined)
+            {
+                sell_text += "<tr><th class='progth'>Popularity</th><td class='progtd'>"+popcircle+"</td></tr>";
+            }
+            
+            var fstar = data.Item.Seller.FeedbackRatingStar;
+            
+            if (fstar != undefined)
+            {
+                if (parseInt(fscore) >= 10000)
+                    whichstar = '<i class="material-icons" style="vertical-align: middle; font-size: 32px; color: '+fstar.replace("Shooting","")+';">star</i>';
+                else
+                    whichstar = '<i class="material-icons" style="vertical-align: middle; font-size: 32px; color: '+fstar+';">star_border</i>';
+                
+                sell_text += '<tr><th>Feedback Rating Star</th><td>'+whichstar+'</td></tr>';
+            }
+            
+            var trated = data.Item.Seller.TopRatedSeller;
+            
+            tick = '<i class="material-icons" style="vertical-align: middle; color: green;">done</i>';
+            cross = '<i class="material-icons" style="vertical-align: middle; color: red;">clear</i>';
+            
+            if (trated != undefined)
+            {
+                if(trated == true)
+                    thecheck = tick;
+            }
+            else
+                thecheck = cross;
+            
+            sell_text += '<tr><th>Top Rated</th><td>'+thecheck+'</td></tr>';
+            
+            var storename = data.Item.Storefront;
+            
+            if(storename != undefined)
+            {
+                sell_text += '<tr><th>Store Name</th><td>'+storename.StoreName+'</td></tr>';
+            }
+            
+            var storeurl = data.Item.Storefront;
+            
+            if(storeurl != undefined)
+            {
+                sell_text += '<tr><th>Buy Product At</th><td><a class="storelink" href='+storeurl.StoreURL+' target="_blank">Store</a></td></tr>';
+            }
+            
+            $('#wishlist #seller').html("");
+            $('#wishlist #seller').html($compile(sell_text)($scope));
+            
+            $http.get("http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/similar/"+encodeURIComponent(theid))
+                .then(function(sim_data){
+                
+                similarTab(sim_data.data);                
+            });
+        
+        }
+        
+        function productPage(data)
+        {
+            prod_det = data;
+            html_text = "<h5 style='text-align:center; font-weight: 700;'>"+data.Item.Title+"</h5>";
+            var theid = data.Item.ItemID;
+            
+            html_text += "<div class='container'><button type='button' style='float: left; margin-bottom: 20px; font-weight: 500;' class='btn btn-light detail_btn' ng-click='backtoResults()'><i style='vertical-align: middle;' class='material-icons'>chevron_left</i>List</button>";
+            
+            var favourites_list = JSON.parse(localStorage.getItem("favourites"));
+            
+            if (favourites_list == null || !favourites_list.includes(parseInt(theid)))
+            {
+                fav_func = "addfav";
+                iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon addfav'>add_shopping_cart</i>";
+            }
+
+            else
+            {
+                fav_func = "removefav";
+                iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon removefav'>remove_shopping_cart</i>";
+            }
+            
+            
+            html_text += "<div style='float: right; display: flex;'><button type='button' style='float: right; margin-bottom: 20px;' class='btn btn-light detail_btn' ng-click='"+fav_func+"("+theid+",$event)'>"+iconer+"</button></div><a target='_blank' href='' ng-click='fbShare()' id='fbBtn' style='margin-right: 2px; float:right;'><img src='http://csci571.com/hw/hw8/Images/facebook.png' height='40' width='40';></a></div>";
+            
+            
+            
+            html_text += "<div class='container' style='margin-top: 80px; '>";
+            
+            
+            html_text += "<ul class='nav nav-tabs mb-3 justify-content-end' id='tabs_details' role='tablist'>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link active btn-dark' id='products_tab' data-toggle='tab' href='#products' role='tab' aria-controls='products' aria-selected='true'>Product</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='photos_tab' data-toggle='tab' href='#photos' role='tab' aria-controls='products' aria-selected='false'>Photos</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='shipping_tab' data-toggle='tab' href='#shipping' role='tab' aria-controls='shipping' aria-selected='false'>Shipping</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='seller_tab' data-toggle='tab' href='#seller' role='tab' aria-controls='seller' aria-selected='false'>Seller</a></li>";
+            
+            html_text += "<li class='nav-item'><a class='nav-link btn-dark' id='similar_tab' data-toggle='tab' href='#similar' role='tab' aria-controls='similar' aria-selected='false'>Similar Products</a></li>";
+            
+            html_text += "</ul>";
+            
+            html_text += '<div class="tab-content" id="myTabContent">';
+            html_text += '<div class="tab-pane fade show active" id="products" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="photos" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="shipping" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="seller" role="tabpanel"></div>';
+            html_text += '<div class="tab-pane fade" id="similar" role="tabpanel"></div>';
+            html_text += '</div>';
+            
+            
+            html_text += "</div>";
+            
+            
+            document.getElementById("results").innerHTML = "";
+            angular.element(document.getElementById("results")).append($compile(html_text)($scope));
+            
+            // Product Details:
+            
+            prod_text = "<table id='detailstb' style='margin-top:-15px;' class='table table-dark table-striped'><tbody>";
+            
+            prod_text += "<tr><th>Product Images</th><td><a id='prod_modal' href=''>View Product Images Here</a></td></tr>";
+            
+            
+            prod_text += '<div class="modal" id="gallery_modal" role="dialog"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">';
+            
+            prod_text += '<h5 class="modal-title" style="font-weight: 700;">Product Images</h5>';
+            
+            prod_text += '<button class="close" type="button" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>';
+            
+            prod_text += '</div><div class="modal-body"><div id="gallery_carousel" class="carousel slide">';
+            
+            prod_text += '<div class="carousel-inner">';
+            
+            for(h=0; h<data.Item.PictureURL.length; h++)
+            {
+                if (h == 0)
+                    activator = " active";
+                else
+                    activator = "";
+                
+                prod_text += '<div class="carousel-item'+activator+'">';
+                prod_text += '<a href="'+data.Item.PictureURL[h]+'" target="_blank"><img class="d-block w-100 car_images" src='+data.Item.PictureURL[h]+'></a>';
+                prod_text += '</div>';
+            }
+            
+            prod_text += '</div>';
+            
+            if(data.Item.PictureURL.length>1)
+            {
+                prod_text += '<a class="carousel-control-prev" href="#gallery_carousel" data-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span></i></a>';
+
+                prod_text += '<a class="carousel-control-next" href="#gallery_carousel" data-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span></a>';
+            }
+            
+            
+            prod_text += '</div></div><div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal">Close</button></div></div></div></div>';
+            
+            if (data.Item.Subtitle != undefined)
+                prod_text += "<tr><th>Subtitle</th><td>"+data.Item.Subtitle+"</td></tr>";
+                
+            prod_text += "<tr><th>Price</th><td>$"+parseFloat(data.Item.CurrentPrice.Value).toFixed(2)+"</td></tr>";
+            
+            prod_text += "<tr><th>Location</th><td>"+data.Item.Location+"</td></tr>";
+            
+            if(data.Item.ReturnPolicy.ReturnsAccepted == "Returns Accepted")
+                returner = "Returns Accepted Within "+data.Item.ReturnPolicy.ReturnsWithin;
+            else
+                returner = "Returns Not Accepted";
+            
+            prod_text += "<tr><th>Return Policy</th><td>"+returner+"</td></tr>";
+            
+            spectest = data.Item.ItemSpecifics;
+            if (spectest != undefined)
+            {
+                spec_len = data.Item.ItemSpecifics.NameValueList.length;
+            
+                for (t=0; t<spec_len; t++)
+                {
+                    prod_text += "<tr>";
+
+                    prod_text += "<th>"+data.Item.ItemSpecifics.NameValueList[t].Name+"</th><td>";
+
+                    for (j=0; j < data.Item.ItemSpecifics.NameValueList[t].Value.length; j++)
+                    {
+                        prod_text += ""+data.Item.ItemSpecifics.NameValueList[t].Value[j];
+                        if (data.Item.ItemSpecifics.NameValueList[t].Value.length == j+1)
+                            prod_text += "";
+                        else
+                            prod_text += ", ";
+                    }
+
+                    prod_text += "</td></tr>";
+                }
+
+                prod_text += "</tbody></table>";
+            }
+            
+            
+            
+            $('#products').html("");
+            angular.element(document.getElementById("products")).append($compile(prod_text)($scope));
+            
+            $("#prod_modal").click(function(){
+               $('#gallery_modal').modal('show');
+            });
+            
+            $('.carousel').carousel({
+               interval: false 
+            });
+            
+            // Photos Tab:
+            $http.get("http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/search/"+encodeURIComponent(data.Item.Title))
+                .then(function(img_data)
+                     {
+                changePhoto(img_data.data);
+                
+            });
+            
+            // Shipping Tab:
+            
+              ship_text = "<table id='shippingtb' style='margin-top:-15px;' class='table table-dark table-striped'><tbody>";
+            
+            
+            shipcheck = data.Item.ShippingCostSummary;
+
+            if (shipcheck != undefined)
+            {
+                var shipcost = shipcheck.ShippingServiceCost.Value;
+
+                if (shipcost != 0.0)
+                    shipcost = "$"+shipcost;
+                else
+                    shipcost = "Free Shipping";
+                ship_text += "<tr><th>Shipping Cost</th><td>"+shipcost+"</td></tr>";
+            }
+
+            var shiploc = data.Item.ShipToLocations;
+
+            if( shiploc != undefined)
+            {
+                ship_text += "<tr><th>Shipping Locations</th><td>";
+                for (t2=0; t2 < shiploc.length; t2++)
+                {
+
+                    ship_text += ""+shiploc[t2];
+                    if(shiploc.length == t2+1)
+                        ship_text += "";
+                    else
+                        ship_text += ", ";
+
+                }
+                ship_text += "</td></tr>";
+            }
+
+            var hcheck = data.Item.HandlingTime;
+
+            if (hcheck != undefined)
+            {
+                if (hcheck == 1 || hcheck == 0)
+                    ship_text += "<tr><th>Handling Time</th><td>"+hcheck+" Day</td></tr>";
+                else
+                    ship_text += "<tr><th>Handling Time</th><td>"+hcheck+" Days</td></tr>";
+            }                    
+
+            tick = '<i class="material-icons" style="vertical-align: middle; color: green;">done</i>';
+            cross = '<i class="material-icons" style="vertical-align: middle; color: red;">clear</i>';
+
+            
+            for(t1 = 0; t1 < results_data.findItemsAdvancedResponse[0].searchResult[0]['@count']; t1++)
+            {
+                if(theid == results_data.findItemsAdvancedResponse[0].searchResult[0].item[t1].itemId[0])
+                {                    
+                    var expedite = results_data.findItemsAdvancedResponse[0].searchResult[0].item[t1].shippingInfo[0].expeditedShipping[0];
+                    var oneday = results_data.findItemsAdvancedResponse[0].searchResult[0].item[t1].shippingInfo[0].oneDayShippingAvailable[0];
+                    var returnsaccept = results_data.findItemsAdvancedResponse[0].searchResult[0].item[t1].returnsAccepted[0];
+                    
+                    if (expedite != undefined)
+                    {
+                        if (expedite == "true")
+                            expval = tick;
+                        else
+                            expval = cross;
+                        ship_text += "<tr><th>Expedited Shipping</th><td>"+expval+"</td></tr>";
+                        
+                    }
+                    
+                    if (oneday != undefined)
+                    {
+                        if (oneday == "true")
+                            oneval = tick;
+                        else
+                            oneval = cross;
+                        ship_text += "<tr><th>One Day Shipping</th><td>"+oneval+"</td></tr>";
+                    }
+                    
+                    if (returnsaccept != undefined)
+                    {
+                        if (returnsaccept == "true")
+                            retval = tick;
+                        else
+                            retval = cross;
+                        ship_text += "<tr><th>Returns Accepted</th><td>"+retval+"</td></tr>";
+                    }
+                    
+                }
+            }
+            
+            ship_text += "</tbody></table>";
+            
+            $('#shipping').html("");
+            angular.element(document.getElementById("shipping")).append($compile(ship_text)($scope));
+            
+            // Seller Tab:
+            
+            sell_text = "<table id='sellertb' style='margin-top:-15px;' class='table table-dark table-striped'><tbody>";
+            
+            sell_text += "<tr><th class='sellerheader' style='text-align: center;' colspan='2'>"+data.Item.Seller.UserID.toUpperCase()+"</th></tr>";
+            
+            var fscore = data.Item.Seller.FeedbackScore;
+            
+            if (fscore!= undefined)
+            {
+                sell_text += "<tr><th>Feedback Score</th><td>"+fscore+"</td></tr>";
+            }
+            
+            var pop = data.Item.Seller.PositiveFeedbackPercent;
+            
+            var popcircle = '<round-progress max="100" current="'+pop+'" color="green" bgcolor="#eaeaea" radius="20" stroke="3" semi="false" rounded="true" clockwise="false" responsive="false"></round-progress><span class="popspan">'+pop+'</span>';
+            
+            if (pop != undefined)
+            {
+                sell_text += "<tr><th class='progth'>Popularity</th><td class='progtd'>"+popcircle+"</td></tr>";
+            }
+            
+            var fstar = data.Item.Seller.FeedbackRatingStar;
+            
+            if (fstar != undefined)
+            {
+                if (parseInt(fscore) >= 10000)
+                    whichstar = '<i class="material-icons" style="vertical-align: middle; font-size: 32px; color: '+fstar.replace("Shooting","")+';">star</i>';
+                else
+                    whichstar = '<i class="material-icons" style="vertical-align: middle; font-size: 32px; color: '+fstar+';">star_border</i>';
+                
+                sell_text += '<tr><th>Feedback Rating Star</th><td>'+whichstar+'</td></tr>';
+            }
+            
+            var trated = data.Item.Seller.TopRatedSeller;
+            
+            tick = '<i class="material-icons" style="vertical-align: middle; color: green;">done</i>';
+            cross = '<i class="material-icons" style="vertical-align: middle; color: red;">clear</i>';
+            
+            if (trated != undefined)
+            {
+                if(trated == true)
+                    thecheck = tick;
+            }
+            else
+                thecheck = cross;
+            
+            sell_text += '<tr><th>Top Rated</th><td>'+thecheck+'</td></tr>';
+            
+            var storename = data.Item.Storefront;
+            
+            if(storename != undefined)
+            {
+                sell_text += '<tr><th>Store Name</th><td>'+storename.StoreName+'</td></tr>';
+            }
+            
+            var storeurl = data.Item.Storefront;
+            
+            if(storeurl != undefined)
+            {
+                sell_text += '<tr><th>Buy Product At</th><td><a class="storelink" href='+storeurl.StoreURL+' target="_blank">Store</a></td></tr>';
+            }
+            
+            $('#seller').html("");
+            angular.element(document.getElementById("seller")).append($compile(sell_text)($scope));
+            
+            // Similar Tab:
+            
+            $http.get("http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/similar/"+encodeURIComponent(theid))
+                .then(function(sim_data){
+                
+                similarTab(sim_data.data);                
+            });
+        
+        }
+        
+        $scope.fbShare = function()
+        {
+            quotes = encodeURIComponent('Buy '+prod_det.Item.Title+' at $'+prod_det.Item.CurrentPrice.Value+' from link below');
+            window.open('https://www.facebook.com/dialog/share?app_id=284794219082312&display=popup&href='+prod_det.Item.ViewItemURLForNaturalSearch+'&quote='+quotes);
+            
+        }
+        
+        $scope.backtoWishlist = function()
+        {
+            $('#wishlist').html("");
+            angular.element(document.getElementById("wishlist")).append($compile(save_wishlist)($scope));
+        }
+        
+        $scope.backtoResults = function()
+        {
+            $('#results').html("");
+            angular.element(document.getElementById("results")).append($compile(save_results)($scope));
+            
+            // Pagination
+            
+            $('#resultstb').after('<div id="results"></div>');
+            var pagelimit = 10;
+            var totalitems = $('#resultstb tbody tr').length;
+            var totalpages = totalitems/pagelimit;
+            
+            $('#results').append('<nav class="pg_nav"><ul class="pagination pagination-sm justify-content-center"><li class="page-item disabled"><a id="previous" class="page-link" href="javascript:void(0);" tabindex="-1"><span aria-hidden="true">&laquo;&nbsp;&nbsp;</span>Previous</a></li>');
+
+            for(i = 0;i < totalpages;i++)
+            {
+                var pager = i + 1;
+                $('#results ul').append('<li class="page-item"><a class="page-link pgination" href="javascript:void(0);" rel="'+i+'">'+pager+'</a></li>');
+            }
+            recallpage = '.page-link[rel="'+thecurrentpage+'"]';
+            $(recallpage).addClass('active');
+            
+            $('#results ul').append('<li class="page-item"><a id="next" href="javascript:void(0);" class="page-link">Next<span aria-hidden="true">&nbsp;&nbsp;&raquo;</span></a></li></ul></nav>');
+            
+             var current_page = $('.pgination.active').attr('rel');
+                var rel_next = parseInt(current_page);
+            
+            if (rel_next+1 == totalpages)
+                $('#next').parent().addClass("disabled");
+            else
+                $('#next').parent().removeClass("disabled");
+
+            if(rel_next == 0)
+                $('#previous').parent().addClass("disabled");
+            else    
+                $('#previous').parent().removeClass("disabled");
+            
+            $('#resultstb tbody tr').hide();
+            $('#resultstb tbody tr').slice(rel_next*10, (rel_next*10)+10).show();
+            
+            $('#next').bind('click', function()
+            {
+                var current_page = $('.pgination.active').attr('rel');
+                var rel_next = parseInt(current_page)+1;
+                var tt = ".page-link[rel="+rel_next+"]";
+                $(tt).click();
+            });
+            
+            $('#previous').bind('click', function()
+            {
+                var current_page = $('.pgination.active').attr('rel');
+                var rel_next = parseInt(current_page)-1;
+                var tt = ".page-link[rel="+rel_next+"]";
+                $(tt).click();
+            });
+            
+            $('#results .pgination').bind('click', function(){
+                
+                $('#results .page-link').removeClass('active');
+                $(this).addClass('active');
+                var currPage = $(this).attr('rel');
+                var startItem = currPage * pagelimit;
+                var endItem = startItem + pagelimit;
+                
+                var current_page = $('.pgination.active').attr('rel');
+                var rel_next = parseInt(current_page);
+                
+                if (rel_next+1 == totalpages)
+                    $('#next').parent().addClass("disabled");
+                else
+                    $('#next').parent().removeClass("disabled");
+                
+                if(rel_next == 0)
+                    $('#previous').parent().addClass("disabled");
+                else    
+                    $('#previous').parent().removeClass("disabled");
+                
+                $('#resultstb tbody tr').hide().slice(startItem, endItem).
+                css('display','table-row').animate({opacity:1}, 300);
+                
+            });
+            
+            // Refresh Wishlist buttons.            
+            
+            $('#results .favouriter').each(function(i)
+            {
+
+                var favourites_list = JSON.parse(localStorage.getItem("favourites"));
+                var temp_index = results_data.findItemsAdvancedResponse[0].searchResult[0].item[i].itemId[0];
+                if (favourites_list == null || !favourites_list.includes(parseInt(temp_index)))
+                {
+                    fav_func = "addfav";
+                    iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon addfav'>add_shopping_cart</i>";
+                }
+
+                else
+                {
+                    fav_func = "removefav";
+                    iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon removefav'>remove_shopping_cart</i>";
+                }
+
+                $(this).parent().html($compile("<button type='button' ng-click='"+fav_func+"("+temp_index+",$event)' class='btn btn-light favouriter'>"+iconer+"</button>")($scope));
+                
+            });
+        }
+
+        $scope.rowselect = function(getrow)
+        {
+            var thisrow = getrow.currentTarget;
+            
+            $(thisrow).css('background-color', '#c7c8ca').siblings().css('background-color', '');
+            $('.detail_btn').prop( "disabled", false );
+            $(thisrow).addClass('highlighted').siblings().removeClass('highlighted');
+        }
+        
+        
+        $(document).on('mouseover','[data-toggle="tooltip"]',function(){
+            $(this).tooltip('show');
+        });
+        
+        $(document).on('click','[data-toggle="tooltip"]',function(){
+            $(this).tooltip('hide');
+        });
+        
+        $scope.rowselect_wish = function(getrow)
+        {
+            var thisrow = getrow.currentTarget;
+            
+            $(thisrow).css('background-color', '#c7c8ca').siblings().css('background-color', '');
+            $('.detail_btn').prop( "disabled", false );
+            $(thisrow).addClass('highlightedwish').siblings().removeClass('highlightedwish');
+        }
+        
+        $scope.JSONSetter = function(w_id)
+        {
+            var wish_url = "http://avishkarkola-hw8.us-east-2.elasticbeanstalk.com/details/"+w_id;
+            $http.get(wish_url)
+            .then(function(response){
+                var w_data = response.data;
+                    wishlistJSON.push(w_data);
+            });
+            
+        }
+        
+        $scope.wishCaller = function()
+        {
+            var f_list = JSON.parse(localStorage.getItem("favourites"));
+            
+            if(f_list != null)
+            {                   
+                for(i=0;i<f_list.length;i++)
+                {
+                    $scope.JSONSetter(f_list[i]);
+                }
+            }
+        }
+        
+        function mediaSizer()
+            { 
+                
+                if (window.matchMedia('(max-width: 576px)').matches)
+                {               
+                    $("#similar_tab").text("Related");
+                }
+                else
+                {                   
+                    $("#similar_tab").text("Similar Products");
+                }
+            }
+
+            mediaSizer();
+            window.addEventListener('resize', mediaSizer, false);  
+
+        
+        $(document).ready(function() {
+            $scope.wishCaller();
+            $scope.listWishes()
+            $('#wishlist_tab').bind('click', function()
+            {
+                $scope.listWishes();
+            });
+            $('#results_tab').bind('click', function(){
+                
+                $('#results .favouriter').each(function(i)
+                {
+
+                    var favourites_list = JSON.parse(localStorage.getItem("favourites"));
+                    var temp_index = results_data.findItemsAdvancedResponse[0].searchResult[0].item[i].itemId[0];
+                    if (favourites_list == null || !favourites_list.includes(parseInt(temp_index)))
+                    {
+                        fav_func = "addfav";
+                        iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon addfav'>add_shopping_cart</i>";
+                    }
+
+                    else
+                    {
+                        fav_func = "removefav";
+                        iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon removefav'>remove_shopping_cart</i>";
+                    }
+
+                    $(this).parent().html($compile("<button type='button' ng-click='"+fav_func+"("+temp_index+",$event)' class='btn btn-light favouriter'>"+iconer+"</button>")($scope));
+
+                });
+                
+            });
+        });
+        
+        $scope.listWishes = function()
+        {
+            //alert(wishlistJSON.length);
+            checklist = JSON.parse(localStorage.getItem("favourites"));
+            if (checklist == null || checklist == "")
+                $("#wishlist").html($compile("<div class='no_results'>No Records.</div>")($scope));
+            else
+            {
+                wish_text = "<button type='button' style='float: right; margin-bottom: 20px;' class='btn btn-light detail_btn' ng-click='DetailsBtn()' disabled>Detail<i style='vertical-align: middle;' class='material-icons'>chevron_right</i></button>";
+
+                wish_text += "<table id='wishtb' class='table table-dark table-striped table-hover'>";
+                wish_text += "<thead>";
+                wish_text += "<th scope='col'>#</th>";
+                wish_text += "<th scope='col'>Image</th>";
+                wish_text += "<th scope='col'>Title</th>";
+                wish_text += "<th scope='col'>Price</th>";
+                wish_text += "<th scope='col'>Shipping</th>";
+                wish_text += "<th scope='col'>Seller</th>";
+                wish_text += "<th scope='col'>Wishlist</th>";
+                wish_text += "</thead>";
+                wish_text += "<tbody>";
+                
+                for(i=0;i<wishlistJSON.length;i++)
+                {
+                    //Index:
+                    wish_text += "<tr class='resultrows' ng-click='rowselect($event)'>";
+                    wish_text += "<td>"+(i+1)+"</td>";
+                    
+                    //Image:
+                    if(wishlistJSON[i].Item.GalleryURL != undefined)
+                        var gal_href = wishlistJSON[i].Item.PictureURL[0];
+                    else
+                        var gal_href = "http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif";
+                    
+                    wish_text += "<td class='thumb_cover'><a href='"+gal_href+"' target='_blank'><img style='width: 100px; height: 100px;'  class='t_thumb' src='"+gal_href+"' onerror='this.src=http://www.51allout.co.uk/wp-content/uploads/2012/02/Image-not-found.gif'/></a></td>";
+                    
+                    //Name:
+                    
+                    var ell_name = ellipsize(wishlistJSON[i].Item.Title);
+                    var this_id = wishlistJSON[i].Item.ItemID;
+                    
+                    wish_text += "<td class='t_name t_tips' id='"+this_id+"'><a class='results_links' data-toggle='tooltip' data-placement='bottom' title='"+wishlistJSON[i].Item.Title+"' href='' ng-click='linkClickW("+this_id+")' >"+ell_name+"</a></td>";
+                    
+                    wish_text += "<td class='tdprice'>$"+parseFloat(wishlistJSON[i].Item.CurrentPrice.Value).toFixed(2)+"</td>";
+                                        
+                    shipcheck = wishlistJSON[i].Item.ShippingCostSummary;
+
+                    if (shipcheck != undefined)
+                    {
+                        var shipcost = shipcheck.ShippingServiceCost.Value;
+                        
+                        if (shipcost != 0.0)
+                            shipcost = "$"+shipcost;
+                        else
+                            shipcost = "Free Shipping";
+                        
+                        wish_text += "<td>"+shipcost+"</td>";
+                    }
+                    
+                    wish_text += "<td>"+wishlistJSON[i].Item.Seller.UserID.toUpperCase()+"</td>";
+                    
+                    var favourites_list = JSON.parse(localStorage.getItem("favourites"));
+                    
+                    if (favourites_list == null || !favourites_list.includes(parseInt(wishlistJSON[i].Item.ItemID)))
+                    {
+                        fav_func = "addfav";
+                        iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon addfav'>add_shopping_cart</i>";
+                    }
+                    
+                    else
+                    {
+                        fav_func = "removefav";
+                        iconer = "<i style='vertical-align: middle' class='material-icons favourite_icon removefav'>remove_shopping_cart</i>";
+                    }
+                    
+                    
+                    wish_text += "<td><button type='button' ng-click='"+fav_func+"("+wishlistJSON[i].Item.ItemID+",$event)' class='btn btn-light favouriter'>"+iconer+"</button></td>";
+                    
+                    wish_text += "</tr>";
+                    
+                    
+                }
+                
+                wish_text += "<tr class='total_shop'><th></th><th></th><th></th><th></th><th></th><th>Total Shopping</th></tr>";
+                
+                wish_text += "</tbody></table>";
+                
+                $("#wishlist").html($compile(wish_text)($scope));
+                
+                var total_val = 0;
+                $("#wishtb .tdprice").each(function(){
+                    total_val += parseFloat($(this).text().replace('$',''));
+                });
+                $(".total_shop").append($compile("<th>$"+total_val.toFixed(2)+"</th>")($scope))
+                
+            }
+        }
+        
+    });    
+    
+</script>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '284794219082312',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v3.2'
+    });
+      
+    FB.AppEvents.logPageView();   
+      
+  };
+
+</script>
+<script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>

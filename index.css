@@ -1,0 +1,311 @@
+
+body {
+    margin-top: 20px
+}
+
+
+
+#tabs_nav #results_tab {
+    background-color: #202328;
+}
+
+#tabs_nav #results_tab:not(.active) {
+    background-color: white;
+    color: black;
+}
+
+#results_tab:focus
+{
+    box-shadow: none;
+}
+
+#tabs_nav #wishlist_tab {
+    background-color: #202328;
+}
+
+#tabs_nav #wishlist_tab:not(.active) {
+    background-color: white;
+    color: black;
+}
+
+
+#tabs_details #products_tab, #tabs_details #photos_tab, #tabs_details #shipping_tab, #tabs_details #seller_tab, #tabs_details #similar_tab
+{
+    background-color: #202328;
+}
+
+#tabs_details #products_tab:not(.active), #tabs_details #photos_tab:not(.active), #tabs_details #shipping_tab:not(.active), #tabs_details #seller_tab:not(.active), #tabs_details #similar_tab:not(.active)
+{
+    background-color: white;
+    color: black;
+}
+
+#products_tab:focus, #photos_tab:focus, #shipping_tab:focus, #seller_tab:focus, #similar_tab:focus
+{
+    box-shadow: none;
+}
+
+.nav-tabs .nav-item
+{
+    margin-bottom: 0px;
+}
+
+.boxtitle {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+.form_i {
+    vertical-align: middle;
+    padding-right: 1px;
+}
+
+#clearer {
+    margin-left: 25px;
+}
+
+.buttonrow {
+    margin-left: 210px;
+    margin-top: 10px;
+}
+
+#keyword.ng-invalid.ng-touched
+{
+    border: 2px solid red;
+}
+
+#keyword.ng-invalid.ng-dirty
+{
+    border-width: 1px;
+}
+
+#other_loc_text.ng-invalid.ng-touched
+{
+    border: 2px solid red;
+}
+
+.pagination a
+{
+    color: black;
+    text-decoration: none;
+}
+
+.pagination a:hover:not(.active) 
+{
+    background-color: #dddddd;
+}
+
+.pagination a.active
+{
+  background-color: black;
+  color: white;
+    box-shadow: none;
+}
+
+.pagination a 
+{
+    border: none;
+    font-weight: 600;
+}
+.progbar {
+    margin-bottom: 15px;
+}
+
+.page-link:focus 
+{
+    box-shadow: none;
+}
+
+.results_links:hover
+{
+    color: dodgerblue;
+}
+
+.removefav
+{
+    color: #bd8502;
+}
+
+.page-item.disabled .page-link
+{
+    color: #c6c6c6;
+}
+
+.car_images
+{
+    border: 10px solid black;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.carousel-control-next-icon, .carousel-control-prev-icon
+{
+    background-color: black;
+}
+
+#prod_modal
+{
+    color: #619e9e !important;
+    text-decoration: none;
+}
+
+.storelink
+{
+    color: #619e9e !important;
+}
+
+.sellerheader
+{
+    text-align: center;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.progtd
+{
+    display: flex;
+}
+
+.progth
+{
+    vertical-align: middle !important;
+}
+
+.popspan
+{
+    position: relative;
+    right: 33px;
+    top: 7px;
+}
+
+th
+{
+    vertical-align: middle !important;
+}
+
+.griditem
+{
+    border: 9px solid black;
+}
+
+.imagegrid
+{
+    -moz-column-count: 3;
+    -moz-column-gap: 7px;
+    -webkit-column-count: 3;
+    -webkit-column-gap: 7px;
+    column-count: 3;
+    column-gap: 7px;
+}
+
+.imagegrid > div
+{
+    display: inline-block;
+    margin-bottom: 7px;
+}
+
+#photos
+{
+    margin-top: -6px;
+}
+
+.no_photos, .no_results
+{
+    border-radius: 5px;
+    margin-bottom: 30px;
+    padding: 10px;
+    padding-left: 15px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #fff3cd;
+    border-color: #fff3da;
+    color: #967921;
+}
+
+.sim_card
+{
+    background-color: ;
+}
+
+.sim_details
+{
+    font-size: 14px;
+    margin-left: -10px;
+}
+
+#similar
+{
+    margin-bottom: 35px;
+}
+
+.sname
+{
+    color: #6eafaf;
+}
+.sprice
+{
+    color: #00ff00bf;
+}
+.ship
+{
+    color: #ffa500d4;
+}
+.daysleft
+{
+    color: white;
+}
+
+.dropdownrow
+{
+    margin-bottom: 10px;
+}
+
+.dropdownrow div
+{
+    margin-right: 5px;
+}
+
+
+@media only screen and (max-width: 576px)
+{
+    #keyword, #distance, #other_loc_text
+    {
+        max-width: 100%;    
+    }
+    
+    .radiorow
+    {
+        display: inline-grid;
+    }
+    
+    #submitter
+    {
+        margin-left: -40px;
+    }
+    
+    .imagegrid
+    {
+        -moz-column-count: 1;
+        -webkit-column-count: 1;
+        column-count: 1;
+    }
+    .container
+    {
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+    .dropdownrow
+    {
+        margin-left: 0px;
+    }
+}
+
+@media only screen and (max-width: 425px)
+{
+    #submitter
+    {
+        margin-left: -110px;
+    }
+}
