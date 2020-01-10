@@ -49,7 +49,7 @@ app.get('/similar/:itemid', (req, res) => {
 app.get('/search/:searchurl', (req, res) => {
     var item_name = req.params.searchurl;
     
-    var s_url = "https://www.googleapis.com/customsearch/v1?q="+encodeURIComponent(item_name)+"&cx=016306397051644386762:6pr7qy3ytzc&imgSize=huge&imgType=news&num=8&searchType=image&key=AIzaSyC8e2AP0Nz-fx6LIEZX2YJZQb-9PXbvscI";
+    var s_url = "https://www.googleapis.com/customsearch/v1?q="+encodeURIComponent(item_name)+"&cx=016306397051644386762:6pr7qy3ytzc&imgSize=huge&imgType=news&num=8&searchType=image&key=[INSERTKEYHERE]";
     
     console.log(s_url);
     request(s_url, function(err3, resp3, body3){
