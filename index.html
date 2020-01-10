@@ -1601,20 +1601,20 @@
         }
         
         function mediaSizer()
-            { 
-                
-                if (window.matchMedia('(max-width: 576px)').matches)
-                {               
-                    $("#similar_tab").text("Related");
-                }
-                else
-                {                   
-                    $("#similar_tab").text("Similar Products");
-                }
+        { 
+            
+            if (window.matchMedia('(max-width: 576px)').matches)
+            {               
+                $("#similar_tab").text("Related");
             }
+            else
+            {                   
+                $("#similar_tab").text("Similar Products");
+            }
+        }
 
-            mediaSizer();
-            window.addEventListener('resize', mediaSizer, false);  
+        mediaSizer();
+        window.addEventListener('resize', mediaSizer, false);  
 
         
         $(document).ready(function() {
